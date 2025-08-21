@@ -2,7 +2,7 @@ import React, { forwardRef } from "react";
 import ApperIcon from "@/components/ApperIcon";
 import { cn } from "@/utils/cn";
 
-const Select = React.forwardRef(({ 
+const Select = forwardRef(({ 
   className, 
   children,
   error,
@@ -19,7 +19,7 @@ const Select = React.forwardRef(({
 
   return (
     <div className="relative">
-<select
+      <select
         className={cn(
           "flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 appearance-none transition-all duration-200",
           error && "border-red-300 focus:ring-red-500",
@@ -36,7 +36,8 @@ const Select = React.forwardRef(({
       />
     </div>
   );
-};
-Select.displayName = "Select"
+});
 
-export default Select
+Select.displayName = "Select";
+
+export default Select;
