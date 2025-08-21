@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { toast } from 'react-toastify'
 import Header from "@/components/organisms/Header"
 import Button from "@/components/atoms/Button"
 import Badge from "@/components/atoms/Badge"
@@ -8,10 +9,11 @@ import FormField from "@/components/molecules/FormField"
 import Select from "@/components/atoms/Select"
 import ApperIcon from "@/components/ApperIcon"
 import Empty from "@/components/ui/Empty"
-
+import ReceiptScanner from "@/components/organisms/ReceiptScanner"
 const Bills = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
+  const [showScanner, setShowScanner] = useState(false)
 
   const handleSearch = (query) => {
     setSearchQuery(query)
@@ -19,6 +21,20 @@ const Bills = () => {
 
   const handleClearSearch = () => {
     setSearchQuery("")
+  }
+
+  const handleOpenScanner = () => {
+    setShowScanner(true)
+  }
+
+  const handleCloseScanner = () => {
+    setShowScanner(false)
+  }
+
+  const handleSaveBill = (billData) => {
+    // In a real app, this would save to the backend/service
+    console.log('Saving bill data:', billData)
+    toast.success(`Bill from ${billData.vendor} saved successfully!`)
   }
 
   return (
@@ -91,7 +107,7 @@ const Bills = () => {
             </div>
           </Button>
           
-          <Button variant="outline" className="justify-start p-4 h-auto">
+<Button variant="outline" className="justify-start p-4 h-auto" onClick={handleOpenScanner}>
             <div className="text-left">
               <div className="flex items-center mb-2">
                 <ApperIcon name="Scan" className="w-5 h-5 mr-2 text-purple-600" />
@@ -203,11 +219,18 @@ const Bills = () => {
             <Button icon="Plus">
               Add Bill
             </Button>
-            <Button variant="outline" icon="Scan">
+<Button variant="outline" icon="Scan" onClick={handleOpenScanner}>
               Scan Receipt
             </Button>
           </div>
         }
+/>
+
+      {/* Receipt Scanner Modal */}
+      <ReceiptScanner
+        isOpen={showScanner}
+        onClose={handleCloseScanner}
+        onSave={handleSaveBill}
       />
     </div>
   )
