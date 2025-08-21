@@ -23,6 +23,9 @@ const ReceiptScanner = ({ isOpen, onClose, onSave }) => {
     billNumber: '',
     taxAmount: ''
   })
+  const [fieldConfidence, setFieldConfidence] = useState({})
+  const [fieldErrors, setFieldErrors] = useState({})
+  const [manuallyEdited, setManuallyEdited] = useState({})
   const [isProcessing, setIsProcessing] = useState(false)
   const fileInputRef = useRef(null)
 
@@ -52,14 +55,14 @@ const ReceiptScanner = ({ isOpen, onClose, onSave }) => {
     reader.readAsDataURL(file)
   }
 
-  const processOCR = async (file) => {
+const processOCR = async (file) => {
     setIsProcessing(true)
     
     try {
       // Simulate OCR processing
       await new Promise(resolve => setTimeout(resolve, 3000))
       
-      // Mock OCR extracted data
+      // Mock OCR extracted data with field-level confidence scores
       const mockExtractedData = {
         vendor: 'Office Depot',
         amount: '156.78',
@@ -71,15 +74,38 @@ const ReceiptScanner = ({ isOpen, onClose, onSave }) => {
         taxAmount: '12.54'
       }
 
+      // Mock field confidence scores
+      const mockFieldConfidence = {
+        vendor: 0.95,
+        amount: 0.88,
+        date: 0.92,
+        description: 0.76,
+        category: 0.89,
+        dueDate: 0.72,
+        billNumber: 0.94,
+        taxAmount: 0.81
+      }
+
+      // Identify potential errors (low confidence fields)
+      const mockFieldErrors = {}
+      Object.keys(mockFieldConfidence).forEach(field => {
+        if (mockFieldConfidence[field] < 0.8) {
+          mockFieldErrors[field] = 'Low confidence - please verify'
+        }
+      })
+
       setExtractedData(mockExtractedData)
+      setFieldConfidence(mockFieldConfidence)
+      setFieldErrors(mockFieldErrors)
+      setManuallyEdited({})
       setOcrData({
         confidence: 0.923,
         extractedFields: 8,
         processedAt: new Date().toISOString()
       })
       
-      setStep('preview')
-      toast.success('Receipt processed successfully!')
+      setStep('edit') // Go directly to edit mode for field verification
+      toast.success('Receipt processed - please verify extracted fields!')
     } catch (error) {
       toast.error('Failed to process receipt. Please try again.')
       setStep('upload')
@@ -88,11 +114,59 @@ const ReceiptScanner = ({ isOpen, onClose, onSave }) => {
     }
   }
 
-  const handleInputChange = (field, value) => {
+const handleInputChange = (field, value) => {
     setExtractedData(prev => ({
       ...prev,
       [field]: value
     }))
+    
+    // Mark field as manually edited
+    setManuallyEdited(prev => ({
+      ...prev,
+      [field]: true
+    }))
+    
+    // Clear field error if user manually corrects it
+    if (fieldErrors[field]) {
+      setFieldErrors(prev => {
+        const updated = { ...prev }
+        delete updated[field]
+        return updated
+      })
+    }
+  }
+
+  const getFieldValidationState = (field) => {
+    if (manuallyEdited[field]) return 'edited'
+    if (fieldErrors[field]) return 'error'
+    const confidence = fieldConfidence[field] || 0
+    if (confidence > 0.9) return 'high'
+    if (confidence > 0.8) return 'medium'
+    return 'low'
+  }
+
+  const getFieldIndicatorIcon = (field) => {
+    const state = getFieldValidationState(field)
+    switch (state) {
+      case 'edited': return 'CheckCircle2'
+      case 'error': return 'AlertTriangle'
+      case 'high': return 'CheckCircle'
+      case 'medium': return 'AlertCircle'
+      case 'low': return 'XCircle'
+      default: return 'Circle'
+    }
+  }
+
+  const getFieldIndicatorColor = (field) => {
+    const state = getFieldValidationState(field)
+    switch (state) {
+      case 'edited': return 'text-green-600'
+      case 'error': return 'text-red-500'
+      case 'high': return 'text-green-500'
+      case 'medium': return 'text-yellow-500'
+      case 'low': return 'text-red-400'
+      default: return 'text-slate-400'
+    }
   }
 
   const handleSave = () => {
@@ -115,7 +189,7 @@ const ReceiptScanner = ({ isOpen, onClose, onSave }) => {
     handleClose()
   }
 
-  const handleClose = () => {
+const handleClose = () => {
     setStep('upload')
     setUploadedFile(null)
     setImagePreview('')
@@ -130,15 +204,21 @@ const ReceiptScanner = ({ isOpen, onClose, onSave }) => {
       billNumber: '',
       taxAmount: ''
     })
+    setFieldConfidence({})
+    setFieldErrors({})
+    setManuallyEdited({})
     setIsProcessing(false)
     onClose()
   }
 
-  const handleRetake = () => {
+const handleRetake = () => {
     setStep('upload')
     setUploadedFile(null)
     setImagePreview('')
     setOcrData(null)
+    setFieldConfidence({})
+    setFieldErrors({})
+    setManuallyEdited({})
     fileInputRef.current.value = ''
   }
 
@@ -294,91 +374,277 @@ const ReceiptScanner = ({ isOpen, onClose, onSave }) => {
                 </Button>
               </div>
 
-              {/* Extracted Data Form */}
+{/* Field Extraction Editor */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-medium text-slate-900">Extracted Data</h3>
+                  <div>
+                    <h3 className="text-lg font-medium text-slate-900">Field Extraction Editor</h3>
+                    <p className="text-sm text-slate-500">Verify and adjust extracted fields</p>
+                  </div>
                   <Button 
                     variant="outline" 
                     size="sm" 
                     onClick={() => setStep(step === 'preview' ? 'edit' : 'preview')}
                   >
                     <ApperIcon name="Edit" className="w-4 h-4 mr-2" />
-                    {step === 'preview' ? 'Edit Data' : 'Preview Mode'}
+                    {step === 'preview' ? 'Edit Fields' : 'Preview Mode'}
                   </Button>
                 </div>
 
-                <div className="space-y-4">
-                  <FormField label="Vendor Name" required>
+                {/* Field Status Summary */}
+                {step === 'edit' && Object.keys(fieldConfidence).length > 0 && (
+                  <div className="mb-6 p-4 bg-slate-50 rounded-lg">
+                    <h4 className="font-medium text-slate-900 mb-3">Extraction Summary</h4>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="flex items-center">
+                        <ApperIcon name="CheckCircle" className="w-4 h-4 text-green-500 mr-2" />
+                        <span>{Object.values(fieldConfidence).filter(c => c > 0.9).length} High Confidence</span>
+                      </div>
+                      <div className="flex items-center">
+                        <ApperIcon name="AlertCircle" className="w-4 h-4 text-yellow-500 mr-2" />
+                        <span>{Object.values(fieldConfidence).filter(c => c <= 0.9 && c > 0.8).length} Medium Confidence</span>
+                      </div>
+                      <div className="flex items-center">
+                        <ApperIcon name="XCircle" className="w-4 h-4 text-red-400 mr-2" />
+                        <span>{Object.values(fieldConfidence).filter(c => c <= 0.8).length} Low Confidence</span>
+                      </div>
+                      <div className="flex items-center">
+                        <ApperIcon name="CheckCircle2" className="w-4 h-4 text-green-600 mr-2" />
+                        <span>{Object.keys(manuallyEdited).length} Manually Verified</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+<div className="space-y-4">
+                  <FormField 
+                    label={
+                      <div className="flex items-center justify-between">
+                        <span>Vendor Name <span className="text-red-500">*</span></span>
+                        {step === 'edit' && fieldConfidence.vendor && (
+                          <div className="flex items-center text-xs">
+                            <ApperIcon 
+                              name={getFieldIndicatorIcon('vendor')} 
+                              className={cn("w-3 h-3 mr-1", getFieldIndicatorColor('vendor'))} 
+                            />
+                            <span className={getFieldIndicatorColor('vendor')}>
+                              {manuallyEdited.vendor ? 'Verified' : `${(fieldConfidence.vendor * 100).toFixed(0)}%`}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    }
+                    error={fieldErrors.vendor}
+                  >
                     <Input
                       value={extractedData.vendor}
                       onChange={(e) => handleInputChange('vendor', e.target.value)}
                       readOnly={step === 'preview'}
-                      className={step === 'preview' ? 'bg-slate-50' : ''}
+                      className={cn(
+                        step === 'preview' ? 'bg-slate-50' : '',
+                        fieldErrors.vendor ? 'border-red-300 focus:border-red-500' : '',
+                        manuallyEdited.vendor ? 'border-green-300 bg-green-50' : ''
+                      )}
+                      placeholder="Enter vendor name"
                     />
                   </FormField>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField label="Amount" required>
+<div className="grid grid-cols-2 gap-4">
+                    <FormField 
+                      label={
+                        <div className="flex items-center justify-between">
+                          <span>Amount <span className="text-red-500">*</span></span>
+                          {step === 'edit' && fieldConfidence.amount && (
+                            <div className="flex items-center text-xs">
+                              <ApperIcon 
+                                name={getFieldIndicatorIcon('amount')} 
+                                className={cn("w-3 h-3 mr-1", getFieldIndicatorColor('amount'))} 
+                              />
+                              <span className={getFieldIndicatorColor('amount')}>
+                                {manuallyEdited.amount ? 'Verified' : `${(fieldConfidence.amount * 100).toFixed(0)}%`}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      }
+                      error={fieldErrors.amount}
+                    >
                       <Input
                         type="number"
                         step="0.01"
                         value={extractedData.amount}
                         onChange={(e) => handleInputChange('amount', e.target.value)}
                         readOnly={step === 'preview'}
-                        className={step === 'preview' ? 'bg-slate-50' : ''}
+                        className={cn(
+                          step === 'preview' ? 'bg-slate-50' : '',
+                          fieldErrors.amount ? 'border-red-300 focus:border-red-500' : '',
+                          manuallyEdited.amount ? 'border-green-300 bg-green-50' : ''
+                        )}
+                        placeholder="0.00"
                       />
                     </FormField>
 
-                    <FormField label="Tax Amount">
+                    <FormField 
+                      label={
+                        <div className="flex items-center justify-between">
+                          <span>Tax Amount</span>
+                          {step === 'edit' && fieldConfidence.taxAmount && (
+                            <div className="flex items-center text-xs">
+                              <ApperIcon 
+                                name={getFieldIndicatorIcon('taxAmount')} 
+                                className={cn("w-3 h-3 mr-1", getFieldIndicatorColor('taxAmount'))} 
+                              />
+                              <span className={getFieldIndicatorColor('taxAmount')}>
+                                {manuallyEdited.taxAmount ? 'Verified' : `${(fieldConfidence.taxAmount * 100).toFixed(0)}%`}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      }
+                      error={fieldErrors.taxAmount}
+                    >
                       <Input
                         type="number"
                         step="0.01"
                         value={extractedData.taxAmount}
                         onChange={(e) => handleInputChange('taxAmount', e.target.value)}
                         readOnly={step === 'preview'}
-                        className={step === 'preview' ? 'bg-slate-50' : ''}
+                        className={cn(
+                          step === 'preview' ? 'bg-slate-50' : '',
+                          fieldErrors.taxAmount ? 'border-red-300 focus:border-red-500' : '',
+                          manuallyEdited.taxAmount ? 'border-green-300 bg-green-50' : ''
+                        )}
+                        placeholder="0.00"
                       />
                     </FormField>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField label="Date">
+<div className="grid grid-cols-2 gap-4">
+                    <FormField 
+                      label={
+                        <div className="flex items-center justify-between">
+                          <span>Date</span>
+                          {step === 'edit' && fieldConfidence.date && (
+                            <div className="flex items-center text-xs">
+                              <ApperIcon 
+                                name={getFieldIndicatorIcon('date')} 
+                                className={cn("w-3 h-3 mr-1", getFieldIndicatorColor('date'))} 
+                              />
+                              <span className={getFieldIndicatorColor('date')}>
+                                {manuallyEdited.date ? 'Verified' : `${(fieldConfidence.date * 100).toFixed(0)}%`}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      }
+                      error={fieldErrors.date}
+                    >
                       <Input
                         type="date"
                         value={extractedData.date}
                         onChange={(e) => handleInputChange('date', e.target.value)}
                         readOnly={step === 'preview'}
-                        className={step === 'preview' ? 'bg-slate-50' : ''}
+                        className={cn(
+                          step === 'preview' ? 'bg-slate-50' : '',
+                          fieldErrors.date ? 'border-red-300 focus:border-red-500' : '',
+                          manuallyEdited.date ? 'border-green-300 bg-green-50' : ''
+                        )}
                       />
                     </FormField>
 
-                    <FormField label="Due Date">
+                    <FormField 
+                      label={
+                        <div className="flex items-center justify-between">
+                          <span>Due Date</span>
+                          {step === 'edit' && fieldConfidence.dueDate && (
+                            <div className="flex items-center text-xs">
+                              <ApperIcon 
+                                name={getFieldIndicatorIcon('dueDate')} 
+                                className={cn("w-3 h-3 mr-1", getFieldIndicatorColor('dueDate'))} 
+                              />
+                              <span className={getFieldIndicatorColor('dueDate')}>
+                                {manuallyEdited.dueDate ? 'Verified' : `${(fieldConfidence.dueDate * 100).toFixed(0)}%`}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      }
+                      error={fieldErrors.dueDate}
+                    >
                       <Input
                         type="date"
                         value={extractedData.dueDate}
                         onChange={(e) => handleInputChange('dueDate', e.target.value)}
                         readOnly={step === 'preview'}
-                        className={step === 'preview' ? 'bg-slate-50' : ''}
+                        className={cn(
+                          step === 'preview' ? 'bg-slate-50' : '',
+                          fieldErrors.dueDate ? 'border-red-300 focus:border-red-500' : '',
+                          manuallyEdited.dueDate ? 'border-green-300 bg-green-50' : ''
+                        )}
                       />
                     </FormField>
                   </div>
 
-                  <FormField label="Bill Number">
+<FormField 
+                    label={
+                      <div className="flex items-center justify-between">
+                        <span>Bill Number</span>
+                        {step === 'edit' && fieldConfidence.billNumber && (
+                          <div className="flex items-center text-xs">
+                            <ApperIcon 
+                              name={getFieldIndicatorIcon('billNumber')} 
+                              className={cn("w-3 h-3 mr-1", getFieldIndicatorColor('billNumber'))} 
+                            />
+                            <span className={getFieldIndicatorColor('billNumber')}>
+                              {manuallyEdited.billNumber ? 'Verified' : `${(fieldConfidence.billNumber * 100).toFixed(0)}%`}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    }
+                    error={fieldErrors.billNumber}
+                  >
                     <Input
                       value={extractedData.billNumber}
                       onChange={(e) => handleInputChange('billNumber', e.target.value)}
                       readOnly={step === 'preview'}
-                      className={step === 'preview' ? 'bg-slate-50' : ''}
+                      className={cn(
+                        step === 'preview' ? 'bg-slate-50' : '',
+                        fieldErrors.billNumber ? 'border-red-300 focus:border-red-500' : '',
+                        manuallyEdited.billNumber ? 'border-green-300 bg-green-50' : ''
+                      )}
+                      placeholder="Invoice or bill number"
                     />
                   </FormField>
 
-                  <FormField label="Category">
+<FormField 
+                    label={
+                      <div className="flex items-center justify-between">
+                        <span>Category</span>
+                        {step === 'edit' && fieldConfidence.category && (
+                          <div className="flex items-center text-xs">
+                            <ApperIcon 
+                              name={getFieldIndicatorIcon('category')} 
+                              className={cn("w-3 h-3 mr-1", getFieldIndicatorColor('category'))} 
+                            />
+                            <span className={getFieldIndicatorColor('category')}>
+                              {manuallyEdited.category ? 'Verified' : `${(fieldConfidence.category * 100).toFixed(0)}%`}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    }
+                    error={fieldErrors.category}
+                  >
                     <Select
                       value={extractedData.category}
                       onChange={(e) => handleInputChange('category', e.target.value)}
                       disabled={step === 'preview'}
-                      className={step === 'preview' ? 'bg-slate-50' : ''}
+                      className={cn(
+                        step === 'preview' ? 'bg-slate-50' : '',
+                        fieldErrors.category ? 'border-red-300 focus:border-red-500' : '',
+                        manuallyEdited.category ? 'border-green-300 bg-green-50' : ''
+                      )}
                     >
                       <option value="office-supplies">Office Supplies</option>
                       <option value="utilities">Utilities</option>
@@ -391,21 +657,62 @@ const ReceiptScanner = ({ isOpen, onClose, onSave }) => {
                     </Select>
                   </FormField>
 
-                  <FormField label="Description">
+<FormField 
+                    label={
+                      <div className="flex items-center justify-between">
+                        <span>Description</span>
+                        {step === 'edit' && fieldConfidence.description && (
+                          <div className="flex items-center text-xs">
+                            <ApperIcon 
+                              name={getFieldIndicatorIcon('description')} 
+                              className={cn("w-3 h-3 mr-1", getFieldIndicatorColor('description'))} 
+                            />
+                            <span className={getFieldIndicatorColor('description')}>
+                              {manuallyEdited.description ? 'Verified' : `${(fieldConfidence.description * 100).toFixed(0)}%`}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    }
+                    error={fieldErrors.description}
+                  >
                     <Input
                       value={extractedData.description}
                       onChange={(e) => handleInputChange('description', e.target.value)}
                       readOnly={step === 'preview'}
-                      className={step === 'preview' ? 'bg-slate-50' : ''}
+                      className={cn(
+                        step === 'preview' ? 'bg-slate-50' : '',
+                        fieldErrors.description ? 'border-red-300 focus:border-red-500' : '',
+                        manuallyEdited.description ? 'border-green-300 bg-green-50' : ''
+                      )}
+                      placeholder="Brief description of the expense"
                     />
                   </FormField>
                 </div>
 
+{/* Field Extraction Tips */}
+                {step === 'edit' && Object.keys(fieldErrors).length > 0 && (
+                  <div className="mt-6 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                    <h4 className="font-medium text-amber-900 mb-2 flex items-center">
+                      <ApperIcon name="AlertTriangle" className="w-4 h-4 mr-2" />
+                      Fields Requiring Attention
+                    </h4>
+                    <div className="text-sm text-amber-700 space-y-1">
+                      {Object.entries(fieldErrors).map(([field, error]) => (
+                        <div key={field} className="flex items-center">
+                          <ApperIcon name="Dot" className="w-3 h-3 mr-1" />
+                          <span className="capitalize">{field.replace(/([A-Z])/g, ' $1')}</span>: {error}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {ocrData && (
-                  <div className="mt-6 p-4 bg-green-50 rounded-lg">
-                    <h4 className="font-medium text-green-900 mb-2">OCR Processing Results</h4>
-                    <div className="text-sm text-green-700 space-y-1">
-                      <div>Confidence: {(ocrData.confidence * 100).toFixed(1)}%</div>
+                  <div className="mt-6 p-4 bg-slate-50 rounded-lg">
+                    <h4 className="font-medium text-slate-900 mb-2">Processing Details</h4>
+                    <div className="text-sm text-slate-600 space-y-1">
+                      <div>Overall Confidence: {(ocrData.confidence * 100).toFixed(1)}%</div>
                       <div>Fields Extracted: {ocrData.extractedFields}</div>
                       <div>Processed: {new Date(ocrData.processedAt).toLocaleString()}</div>
                     </div>
