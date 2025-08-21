@@ -21,8 +21,11 @@ const FormField = ({
         </Label>
       )}
       
-      {type === "input" && <Input error={error} {...props} />}
+{type === "input" && <Input error={error} {...props} />}
       {type === "select" && <Select error={error} {...props}>{children}</Select>}
+      {type === "textarea" && (
+        <textarea className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" {...props} />
+      )}
       {type === "custom" && children}
       
       {error && (

@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react"
-import Header from "@/components/organisms/Header"
-import InvoiceList from "@/components/organisms/InvoiceList"
-import SearchBar from "@/components/molecules/SearchBar"
-import Button from "@/components/atoms/Button"
-import Select from "@/components/atoms/Select"
-import Badge from "@/components/atoms/Badge"
-import FormField from "@/components/molecules/FormField"
-import Input from "@/components/atoms/Input"
-import ApperIcon from "@/components/ApperIcon"
-import Loading from "@/components/ui/Loading"
-import Error from "@/components/ui/Error"
-import invoiceService from "@/services/api/invoiceService"
-import { formatCurrency } from "@/utils/formatters"
-import { toast } from "react-toastify"
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import invoiceService from "@/services/api/invoiceService";
+import ApperIcon from "@/components/ApperIcon";
+import InvoiceList from "@/components/organisms/InvoiceList";
+import Header from "@/components/organisms/Header";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import FormField from "@/components/molecules/FormField";
+import SearchBar from "@/components/molecules/SearchBar";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import Input from "@/components/atoms/Input";
+import Select from "@/components/atoms/Select";
+import { formatCurrency } from "@/utils/formatters";
 
 const Invoicing = () => {
   const [invoices, setInvoices] = useState([])
@@ -121,8 +121,13 @@ const Invoicing = () => {
               <ApperIcon name="AlertTriangle" className="w-4 h-4 mr-1" />
               {overdueInvoices} Overdue
             </Badge>
-            <Button variant="outline" icon="Download">
+<Button variant="outline" icon="Download">
               Export
+            </Button>
+            <Button variant="outline" icon="Calendar">
+              <a href="/recurring" className="no-underline">
+                Recurring
+              </a>
             </Button>
             <Button 
               icon="Plus"
@@ -285,8 +290,16 @@ const Invoicing = () => {
             <div className="p-6 space-y-6">
               {/* Customer & Invoice Details */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
+<div className="space-y-4">
                   <h3 className="font-medium text-slate-900">Customer Information</h3>
+                  <FormField label="Use Template" type="select">
+                    <Select>
+                      <option value="">Select template (optional)...</option>
+                      <option value="1">Standard Service Invoice</option>
+                      <option value="2">Product Invoice</option>
+                      <option value="3">Consulting Invoice</option>
+                    </Select>
+                  </FormField>
                   <FormField label="Customer" required type="select">
                     <Select>
                       <option>Select customer...</option>

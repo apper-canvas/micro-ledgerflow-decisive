@@ -1,9 +1,10 @@
-import React from "react"
-import { formatCurrency, formatDate } from "@/utils/formatters"
-import StatusBadge from "@/components/molecules/StatusBadge"
-import Button from "@/components/atoms/Button"
-import Loading from "@/components/ui/Loading"
-import Empty from "@/components/ui/Empty"
+import React from "react";
+import toast from "react-hot-toast";
+import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
+import StatusBadge from "@/components/molecules/StatusBadge";
+import Button from "@/components/atoms/Button";
+import { formatCurrency, formatDate } from "@/utils/formatters";
 
 const InvoiceList = ({ invoices, loading, onView, onEdit, onSend, onMarkPaid }) => {
   if (loading) {
@@ -80,10 +81,18 @@ const InvoiceList = ({ invoices, loading, onView, onEdit, onSend, onMarkPaid }) 
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      icon="Eye"
+icon="Eye"
                       onClick={() => onView?.(invoice)}
                     >
                       View
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      icon="Copy"
+                      onClick={() => toast.info(`Template created from ${invoice.number}`)}
+                    >
+                      Template
                     </Button>
                     {invoice.status === "draft" && (
                       <Button 

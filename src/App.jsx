@@ -9,7 +9,7 @@ import Invoicing from "@/components/pages/Invoicing"
 import Bills from "@/components/pages/Bills"
 import Reports from "@/components/pages/Reports"
 import Settings from "@/components/pages/Settings"
-
+import RecurringScheduler from "@/components/pages/RecurringScheduler"
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -65,7 +65,13 @@ function App() {
               <Route 
                 path="/settings" 
                 element={
-                  <Settings onMenuClick={() => setSidebarOpen(true)} />
+<Settings onMenuClick={() => setSidebarOpen(true)} />
+                } 
+              />
+              <Route 
+                path="/recurring" 
+                element={
+                  <RecurringScheduler onMenuClick={() => setSidebarOpen(true)} />
                 } 
               />
             </Routes>

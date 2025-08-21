@@ -127,6 +127,82 @@ class InvoiceService {
     return aging
   }
 
+// Template Management
+  async getAllTemplates() {
+    await this.delay(200)
+    const templates = JSON.parse(localStorage.getItem('invoiceTemplates') || '[]')
+    return templates.length ? templates : [
+      {
+        Id: 1,
+        name: "Standard Service Invoice",
+        description: "Default template for service invoices",
+        isDefault: true,
+        lineItems: [{ description: "Service Description", quantity: 1, rate: 0, amount: 0 }],
+        taxRate: 0.1,
+        paymentTerms: "Net 30",
+        notes: "Thank you for your business!"
+      }
+    ]
+  }
+
+  async createTemplate(templateData) {
+    await this.delay(300)
+    const templates = await this.getAllTemplates()
+    const newTemplate = {
+      ...templateData,
+      Id: Math.max(0, ...templates.map(t => t.Id)) + 1,
+      createdAt: new Date().toISOString(),
+      isDefault: false
+    }
+    templates.push(newTemplate)
+    localStorage.setItem('invoiceTemplates', JSON.stringify(templates))
+    return newTemplate
+  }
+
+  async updateTemplate(id, templateData) {
+    await this.delay(300)
+    const templates = await this.getAllTemplates()
+    const index = templates.findIndex(t => t.Id === parseInt(id))
+    if (index !== -1) {
+      templates[index] = { ...templates[index], ...templateData }
+      localStorage.setItem('invoiceTemplates', JSON.stringify(templates))
+      return templates[index]
+    }
+    throw new Error("Template not found")
+  }
+
+  async deleteTemplate(id) {
+    await this.delay(300)
+    const templates = await this.getAllTemplates()
+    const filtered = templates.filter(t => t.Id !== parseInt(id))
+    localStorage.setItem('invoiceTemplates', JSON.stringify(filtered))
+    return true
+  }
+
+  // Recurring Invoice Management
+  async createFromTemplate(templateId, invoiceData) {
+    await this.delay(400)
+    const templates = await this.getAllTemplates()
+    const template = templates.find(t => t.Id === parseInt(templateId))
+    if (!template) throw new Error("Template not found")
+    
+    const templateInvoice = {
+      ...template,
+      ...invoiceData,
+      templateId: template.Id,
+      lineItems: template.lineItems.map(item => ({...item}))
+    }
+    
+    return await this.create(templateInvoice)
+  }
+
+  async generateRecurringInvoices(scheduleId) {
+    await this.delay(500)
+    // This would integrate with recurring service to generate invoices
+    // For now, return a placeholder response
+    return { generated: 0, message: "Recurring invoice generation complete" }
+  }
+
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }

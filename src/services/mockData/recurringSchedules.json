@@ -1,0 +1,137 @@
+[
+  {
+    "Id": 1,
+    "name": "Monthly Consulting Invoice - TechCorp",
+    "description": "Monthly consulting services invoice for TechCorp",
+    "templateId": 1,
+    "customerName": "TechCorp Solutions",
+    "customerEmail": "billing@techcorp.com",
+    "frequency": "monthly",
+    "amount": 2500.00,
+    "startDate": "2024-01-01T00:00:00Z",
+    "nextDate": "2024-01-15T00:00:00Z",
+    "lastGenerated": "2023-12-15T00:00:00Z",
+    "totalGenerated": 12,
+    "isActive": true,
+    "createdAt": "2023-01-01T00:00:00Z",
+    "lineItems": [
+      {
+        "description": "Strategic Consulting Services",
+        "quantity": 20,
+        "rate": 125.00,
+        "amount": 2500.00
+      }
+    ],
+    "taxRate": 0.10,
+    "paymentTerms": "Net 30",
+    "notes": "Monthly consulting retainer - thank you for your business!"
+  },
+  {
+    "Id": 2,
+    "name": "Quarterly Software License - DataFlow Inc",
+    "description": "Quarterly software licensing fees",
+    "templateId": 2,
+    "customerName": "DataFlow Inc",
+    "customerEmail": "finance@dataflow.com",
+    "frequency": "quarterly",
+    "amount": 7500.00,
+    "startDate": "2024-01-01T00:00:00Z",
+    "nextDate": "2024-01-01T00:00:00Z",
+    "lastGenerated": "2023-10-01T00:00:00Z",
+    "totalGenerated": 4,
+    "isActive": true,
+    "createdAt": "2023-01-01T00:00:00Z",
+    "lineItems": [
+      {
+        "description": "Enterprise Software License",
+        "quantity": 1,
+        "rate": 7500.00,
+        "amount": 7500.00
+      }
+    ],
+    "taxRate": 0.08,
+    "paymentTerms": "Net 15",
+    "notes": "Quarterly software license renewal"
+  },
+  {
+    "Id": 3,
+    "name": "Weekly Maintenance - Local Cafe",
+    "description": "Weekly IT maintenance services",
+    "templateId": 3,
+    "customerName": "Sunrise Cafe",
+    "customerEmail": "owner@sunrisecafe.com",
+    "frequency": "weekly",
+    "amount": 350.00,
+    "startDate": "2024-01-08T00:00:00Z",
+    "nextDate": "2024-01-08T00:00:00Z",
+    "lastGenerated": "2024-01-01T00:00:00Z",
+    "totalGenerated": 52,
+    "isActive": true,
+    "createdAt": "2023-01-01T00:00:00Z",
+    "lineItems": [
+      {
+        "description": "IT Systems Maintenance",
+        "quantity": 5,
+        "rate": 70.00,
+        "amount": 350.00
+      }
+    ],
+    "taxRate": 0.075,
+    "paymentTerms": "Due on Receipt",
+    "notes": "Weekly maintenance visit - keep systems running smoothly!"
+  },
+  {
+    "Id": 4,
+    "name": "Annual Support Contract - MegaRetail",
+    "description": "Annual software support and maintenance",
+    "templateId": 1,
+    "customerName": "MegaRetail Corp",
+    "customerEmail": "it-procurement@megaretail.com",
+    "frequency": "yearly",
+    "amount": 25000.00,
+    "startDate": "2024-03-01T00:00:00Z",
+    "nextDate": "2025-03-01T00:00:00Z",
+    "lastGenerated": "2024-03-01T00:00:00Z",
+    "totalGenerated": 1,
+    "isActive": true,
+    "createdAt": "2023-02-15T00:00:00Z",
+    "lineItems": [
+      {
+        "description": "Annual Software Support Contract",
+        "quantity": 1,
+        "rate": 25000.00,
+        "amount": 25000.00
+      }
+    ],
+    "taxRate": 0.10,
+    "paymentTerms": "Net 45",
+    "notes": "Annual support contract covering 24/7 support and updates"
+  },
+  {
+    "Id": 5,
+    "name": "Monthly SaaS Subscription - StartupXYZ",
+    "description": "Monthly SaaS platform subscription",
+    "templateId": 2,
+    "customerName": "StartupXYZ",
+    "customerEmail": "billing@startupxyz.com",
+    "frequency": "monthly",
+    "amount": 999.00,
+    "startDate": "2024-01-01T00:00:00Z",
+    "nextDate": "2024-01-20T00:00:00Z",
+    "lastGenerated": null,
+    "totalGenerated": 0,
+    "isActive": false,
+    "createdAt": "2023-12-15T00:00:00Z",
+    "lineItems": [
+      {
+        "description": "Premium SaaS Platform Access",
+        "quantity": 1,
+        "rate": 999.00,
+        "amount": 999.00
+      }
+    ],
+    "taxRate": 0.095,
+    "paymentTerms": "Net 15",
+    "notes": "Monthly SaaS subscription - pause requested until February"
+  }
+]
