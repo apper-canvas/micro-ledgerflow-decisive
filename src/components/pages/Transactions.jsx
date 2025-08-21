@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from "react"
-import Header from "@/components/organisms/Header"
-import TransactionTable from "@/components/organisms/TransactionTable"
-import SearchBar from "@/components/molecules/SearchBar"
-import Button from "@/components/atoms/Button"
-import Select from "@/components/atoms/Select"
-import Badge from "@/components/atoms/Badge"
-import FormField from "@/components/molecules/FormField"
-import Input from "@/components/atoms/Input"
-import ApperIcon from "@/components/ApperIcon"
-import Loading from "@/components/ui/Loading"
-import Error from "@/components/ui/Error"
-import transactionService from "@/services/api/transactionService"
-import { toast } from "react-toastify"
+import React, { useEffect, useState } from "react";
+import CurrencyConverter from "@/components/organisms/CurrencyConverter";
+import currencyService from "@/services/api/currencyService";
+import { toast } from "react-toastify";
+import transactionService from "@/services/api/transactionService";
+import ApperIcon from "@/components/ApperIcon";
+import TransactionTable from "@/components/organisms/TransactionTable";
+import Header from "@/components/organisms/Header";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import FormField from "@/components/molecules/FormField";
+import SearchBar from "@/components/molecules/SearchBar";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import Input from "@/components/atoms/Input";
+import Select from "@/components/atoms/Select";
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([])
@@ -20,8 +22,8 @@ const Transactions = () => {
   const [error, setError] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
-  const [showNewTransactionModal, setShowNewTransactionModal] = useState(false)
-
+const [showNewTransactionModal, setShowNewTransactionModal] = useState(false)
+  const [showCurrencyConverter, setShowCurrencyConverter] = useState(false)
   const loadTransactions = async () => {
     try {
       setLoading(true)
@@ -92,12 +94,19 @@ const Transactions = () => {
         title="Transactions"
         subtitle="Manage your financial transactions and journal entries"
         breadcrumb={["Accounting", "Transactions"]}
-        actions={
+actions={
           <div className="flex items-center space-x-3">
             <Badge variant="ai" className="flex items-center">
               <ApperIcon name="Sparkles" className="w-4 h-4 mr-1" />
               95% Auto-categorized
             </Badge>
+            <Button 
+              icon="TrendingUp"
+              variant="outline"
+              onClick={() => setShowCurrencyConverter(true)}
+            >
+              Currency Converter
+            </Button>
             <Button 
               icon="Upload"
               variant="outline"
@@ -217,6 +226,13 @@ const Transactions = () => {
       />
 
       {/* New Transaction Modal */}
+{/* Currency Converter Modal */}
+      <CurrencyConverter 
+        isOpen={showCurrencyConverter}
+        onClose={() => setShowCurrencyConverter(false)}
+      />
+
+      {/* New Transaction Modal */}
       {showNewTransactionModal && (
         <div className="fixed inset-0 bg-slate-600 bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
@@ -240,12 +256,34 @@ const Transactions = () => {
                 </FormField>
               </div>
               
-              <FormField label="Description" required>
-                <Input placeholder="Enter transaction description" />
-              </FormField>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField label="Description" required>
+                  <Input placeholder="Enter transaction description" />
+                </FormField>
+                <FormField label="Currency">
+                  <Select defaultValue="USD">
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="GBP">GBP - British Pound</option>
+                    <option value="CAD">CAD - Canadian Dollar</option>
+                    <option value="AUD">AUD - Australian Dollar</option>
+                    <option value="JPY">JPY - Japanese Yen</option>
+                  </Select>
+                </FormField>
+              </div>
               
               <div className="bg-slate-50 rounded-lg p-4">
-                <h3 className="font-medium text-slate-900 mb-3">Journal Entries</h3>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-medium text-slate-900">Journal Entries</h3>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    icon="TrendingUp"
+                    onClick={() => setShowCurrencyConverter(true)}
+                  >
+                    Convert Currency
+                  </Button>
+                </div>
                 <div className="space-y-3">
                   <div className="grid grid-cols-3 gap-3">
                     <FormField label="Account" type="select">
@@ -293,7 +331,7 @@ const Transactions = () => {
                 Save & Approve
               </Button>
             </div>
-          </div>
+</div>
         </div>
       )}
     </div>

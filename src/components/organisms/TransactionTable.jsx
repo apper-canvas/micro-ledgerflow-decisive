@@ -37,8 +37,11 @@ const TransactionTable = ({ transactions, loading, onView, onEdit, onApprove }) 
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                 Reference
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
+<th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
                 Amount
+              </th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
+                Currency
               </th>
               <th className="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
                 Status
@@ -70,8 +73,15 @@ const TransactionTable = ({ transactions, loading, onView, onEdit, onApprove }) 
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
                     {transaction.reference}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-slate-900">
-                    {formatCurrency(totalAmount)}
+<td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-slate-900">
+                    {formatCurrency(totalAmount, transaction.currency)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <div className="flex items-center justify-center">
+                      <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-slate-100 text-slate-800">
+                        {transaction.currency || 'USD'}
+                      </span>
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center">
                     <StatusBadge status={transaction.status} />

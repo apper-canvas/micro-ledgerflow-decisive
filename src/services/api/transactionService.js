@@ -31,13 +31,16 @@ class TransactionService {
     })
   }
 
-  async create(transactionData) {
+async create(transactionData) {
     await this.delay(500)
     const newTransaction = {
       ...transactionData,
       Id: Math.max(...this.transactions.map(t => t.Id)) + 1,
       attachments: transactionData.attachments || [],
-      tags: transactionData.tags || []
+      tags: transactionData.tags || [],
+      currency: transactionData.currency || "USD",
+      originalCurrency: transactionData.originalCurrency || transactionData.currency || "USD",
+      exchangeRate: transactionData.exchangeRate || 1
     }
     this.transactions.push(newTransaction)
     return newTransaction
@@ -83,7 +86,7 @@ delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
-  async getBudgetComparison(period = "month", year = 2024) {
+async getBudgetComparison(period = "month", year = 2024) {
     await this.delay(400)
     
     // Group transactions by category for comparison
@@ -114,6 +117,23 @@ delay(ms) {
       })
     
     return categoryTotals
+  }
+
+  async getMultiCurrencyTransactions() {
+    await this.delay(300)
+    return this.transactions.filter(t => t.currency && t.currency !== "USD")
+  }
+
+  async convertTransactionsCurrency(targetCurrency = "USD") {
+    await this.delay(500)
+    // This would integrate with currencyService for real conversions
+    // For now, return transactions with mock conversion data
+    return this.transactions.map(transaction => ({
+      ...transaction,
+      originalCurrency: transaction.currency || "USD",
+      targetCurrency,
+      conversionApplied: transaction.currency !== targetCurrency
+    }))
   }
 
   getCategoryFromAccountId(accountId) {

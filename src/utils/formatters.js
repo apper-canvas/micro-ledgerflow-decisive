@@ -1,11 +1,29 @@
 import { format, parseISO, isValid } from "date-fns"
 
-export const formatCurrency = (amount, currency = "USD") => {
+export const formatCurrency = (amount, currency = "USD", showOriginal = false) => {
+  if (showOriginal && typeof amount === 'object' && amount.convertedAmount) {
+    const original = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: amount.originalCurrency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: currency === 'JPY' ? 0 : 2,
+    }).format(amount.amount)
+    
+    const converted = new Intl.NumberFormat("en-US", {
+      style: "currency", 
+      currency: currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: currency === 'JPY' ? 0 : 2,
+    }).format(amount.convertedAmount)
+    
+    return `${converted} (${original})`
+  }
+  
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: currency,
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: currency === 'JPY' ? 0 : 2,
   }).format(amount)
 }
 
