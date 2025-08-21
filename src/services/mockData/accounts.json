@@ -1,0 +1,110 @@
+[
+  {
+    "Id": 1,
+    "code": "1000",
+    "name": "Cash - Operating Account",
+    "type": "asset",
+    "parentId": null,
+    "balance": 25000,
+    "currency": "USD"
+  },
+  {
+    "Id": 2,
+    "code": "1100",
+    "name": "Accounts Receivable",
+    "type": "asset",
+    "parentId": null,
+    "balance": 15000,
+    "currency": "USD"
+  },
+  {
+    "Id": 3,
+    "code": "1200",
+    "name": "Inventory",
+    "type": "asset",
+    "parentId": null,
+    "balance": 8000,
+    "currency": "USD"
+  },
+  {
+    "Id": 4,
+    "code": "1500",
+    "name": "Equipment",
+    "type": "asset",
+    "parentId": null,
+    "balance": 35000,
+    "currency": "USD"
+  },
+  {
+    "Id": 5,
+    "code": "2000",
+    "name": "Accounts Payable",
+    "type": "liability",
+    "parentId": null,
+    "balance": -8500,
+    "currency": "USD"
+  },
+  {
+    "Id": 6,
+    "code": "2100",
+    "name": "GST/VAT Payable",
+    "type": "liability",
+    "parentId": null,
+    "balance": -2200,
+    "currency": "USD"
+  },
+  {
+    "Id": 7,
+    "code": "3000",
+    "name": "Owner's Equity",
+    "type": "equity",
+    "parentId": null,
+    "balance": -50000,
+    "currency": "USD"
+  },
+  {
+    "Id": 8,
+    "code": "4000",
+    "name": "Revenue - Product Sales",
+    "type": "income",
+    "parentId": null,
+    "balance": -95000,
+    "currency": "USD"
+  },
+  {
+    "Id": 9,
+    "code": "4100",
+    "name": "Revenue - Services",
+    "type": "income",
+    "parentId": null,
+    "balance": -45000,
+    "currency": "USD"
+  },
+  {
+    "Id": 10,
+    "code": "5000",
+    "name": "Cost of Goods Sold",
+    "type": "expense",
+    "parentId": null,
+    "balance": 38000,
+    "currency": "USD"
+  },
+  {
+    "Id": 11,
+    "code": "6000",
+    "name": "Operating Expenses",
+    "type": "expense",
+    "parentId": null,
+    "balance": 25000,
+    "currency": "USD"
+  },
+  {
+    "Id": 12,
+    "code": "6100",
+    "name": "Marketing & Advertising",
+    "type": "expense",
+    "parentId": null,
+    "balance": 8500,
+    "currency": "USD"
+  }
+]

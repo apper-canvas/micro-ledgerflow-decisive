@@ -1,0 +1,180 @@
+[
+  {
+    "Id": 1,
+    "date": "2024-01-15",
+    "description": "Invoice payment from ABC Corp",
+    "reference": "INV-2024-001",
+    "status": "approved",
+    "entries": [
+      {
+        "accountId": "1",
+        "debit": 5000,
+        "credit": null,
+        "taxRate": 0,
+        "notes": "Payment received"
+      },
+      {
+        "accountId": "2",
+        "debit": null,
+        "credit": 5000,
+        "taxRate": 0,
+        "notes": "AR reduction"
+      }
+    ],
+    "attachments": [],
+    "tags": ["invoice", "payment"]
+  },
+  {
+    "Id": 2,
+    "date": "2024-01-16",
+    "description": "Office supplies purchase",
+    "reference": "EXP-2024-001",
+    "status": "approved",
+    "entries": [
+      {
+        "accountId": "11",
+        "debit": 250,
+        "credit": null,
+        "taxRate": 0.1,
+        "notes": "Office supplies"
+      },
+      {
+        "accountId": "6",
+        "debit": 25,
+        "credit": null,
+        "taxRate": 0,
+        "notes": "GST on supplies"
+      },
+      {
+        "accountId": "1",
+        "debit": null,
+        "credit": 275,
+        "taxRate": 0,
+        "notes": "Cash payment"
+      }
+    ],
+    "attachments": ["receipt_001.pdf"],
+    "tags": ["expense", "office"]
+  },
+  {
+    "Id": 3,
+    "date": "2024-01-17",
+    "description": "Product sale to XYZ Company",
+    "reference": "INV-2024-002",
+    "status": "pending",
+    "entries": [
+      {
+        "accountId": "2",
+        "debit": 3300,
+        "credit": null,
+        "taxRate": 0,
+        "notes": "Invoice amount"
+      },
+      {
+        "accountId": "8",
+        "debit": null,
+        "credit": 3000,
+        "taxRate": 0,
+        "notes": "Product sales"
+      },
+      {
+        "accountId": "6",
+        "debit": null,
+        "credit": 300,
+        "taxRate": 0,
+        "notes": "GST collected"
+      }
+    ],
+    "attachments": ["invoice_002.pdf"],
+    "tags": ["sale", "invoice"]
+  },
+  {
+    "Id": 4,
+    "date": "2024-01-18",
+    "description": "Monthly rent payment",
+    "reference": "RENT-2024-01",
+    "status": "approved",
+    "entries": [
+      {
+        "accountId": "11",
+        "debit": 2000,
+        "credit": null,
+        "taxRate": 0,
+        "notes": "January rent"
+      },
+      {
+        "accountId": "1",
+        "debit": null,
+        "credit": 2000,
+        "taxRate": 0,
+        "notes": "Cash payment"
+      }
+    ],
+    "attachments": [],
+    "tags": ["rent", "recurring"]
+  },
+  {
+    "Id": 5,
+    "date": "2024-01-19",
+    "description": "Equipment purchase - AI categorized",
+    "reference": "EQ-2024-001",
+    "status": "pending",
+    "entries": [
+      {
+        "accountId": "4",
+        "debit": 5500,
+        "credit": null,
+        "taxRate": 0.1,
+        "notes": "New computer equipment"
+      },
+      {
+        "accountId": "6",
+        "debit": 500,
+        "credit": null,
+        "taxRate": 0,
+        "notes": "GST on equipment"
+      },
+      {
+        "accountId": "5",
+        "debit": null,
+        "credit": 6000,
+        "taxRate": 0,
+        "notes": "Account payable"
+      }
+    ],
+    "attachments": ["invoice_eq001.pdf"],
+    "tags": ["equipment", "ai-categorized"]
+  },
+  {
+    "Id": 6,
+    "date": "2024-01-20",
+    "description": "Service revenue - Consulting",
+    "reference": "SVC-2024-001",
+    "status": "approved",
+    "entries": [
+      {
+        "accountId": "1",
+        "debit": 2200,
+        "credit": null,
+        "taxRate": 0,
+        "notes": "Cash received"
+      },
+      {
+        "accountId": "9",
+        "debit": null,
+        "credit": 2000,
+        "taxRate": 0,
+        "notes": "Consulting services"
+      },
+      {
+        "accountId": "6",
+        "debit": null,
+        "credit": 200,
+        "taxRate": 0,
+        "notes": "GST collected"
+      }
+    ],
+    "attachments": [],
+    "tags": ["service", "consulting"]
+  }
+]

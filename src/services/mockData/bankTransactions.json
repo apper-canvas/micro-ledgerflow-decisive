@@ -1,0 +1,91 @@
+[
+  {
+    "Id": 1,
+    "bankAccountId": "1",
+    "date": "2024-01-15",
+    "description": "TRANSFER ABC CORPORATION",
+    "amount": 3850.00,
+    "balance": 28850.00,
+    "matchedTransactionId": "1",
+    "category": "Revenue",
+    "aiConfidence": 95
+  },
+  {
+    "Id": 2,
+    "bankAccountId": "1",
+    "date": "2024-01-16",
+    "description": "OFFICE DEPOT INC",
+    "amount": -275.00,
+    "balance": 28575.00,
+    "matchedTransactionId": "2",
+    "category": "Office Expenses",
+    "aiConfidence": 88
+  },
+  {
+    "Id": 3,
+    "bankAccountId": "1",
+    "date": "2024-01-18",
+    "description": "PROPERTY MANAGEMENT CO",
+    "amount": -2000.00,
+    "balance": 26575.00,
+    "matchedTransactionId": "4",
+    "category": "Rent",
+    "aiConfidence": 92
+  },
+  {
+    "Id": 4,
+    "bankAccountId": "1",
+    "date": "2024-01-20",
+    "description": "CONSULTING PAYMENT GLOBAL SOL",
+    "amount": 2200.00,
+    "balance": 28775.00,
+    "matchedTransactionId": "6",
+    "category": "Service Revenue",
+    "aiConfidence": 90
+  },
+  {
+    "Id": 5,
+    "bankAccountId": "1",
+    "date": "2024-01-22",
+    "description": "AWS WEB SERVICES",
+    "amount": -85.50,
+    "balance": 28689.50,
+    "matchedTransactionId": null,
+    "category": "Technology",
+    "aiConfidence": 85
+  },
+  {
+    "Id": 6,
+    "bankAccountId": "1",
+    "date": "2024-01-23",
+    "description": "STRIPE PAYMENT XYZ COMPANY",
+    "amount": 2475.00,
+    "balance": 31164.50,
+    "matchedTransactionId": null,
+    "category": "Revenue",
+    "aiConfidence": 93
+  },
+  {
+    "Id": 7,
+    "bankAccountId": "1",
+    "date": "2024-01-24",
+    "description": "FUEL STATION",
+    "amount": -65.00,
+    "balance": 31099.50,
+    "matchedTransactionId": null,
+    "category": "Vehicle Expenses",
+    "aiConfidence": 78
+  },
+  {
+    "Id": 8,
+    "bankAccountId": "1",
+    "date": "2024-01-25",
+    "description": "UNKNOWN MERCHANT",
+    "amount": -150.00,
+    "balance": 30949.50,
+    "matchedTransactionId": null,
+    "category": null,
+    "aiConfidence": 25,
+    "flagged": true
+  }
+]

@@ -1,0 +1,135 @@
+[
+  {
+    "Id": 1,
+    "number": "INV-2024-001",
+    "customerId": "1",
+    "customerName": "ABC Corporation",
+    "customerEmail": "accounts@abccorp.com",
+    "date": "2024-01-10",
+    "dueDate": "2024-02-09",
+    "lineItems": [
+      {
+        "description": "Professional Services - Consulting",
+        "quantity": 20,
+        "rate": 125.00,
+        "amount": 2500.00
+      },
+      {
+        "description": "Project Management",
+        "quantity": 10,
+        "rate": 100.00,
+        "amount": 1000.00
+      }
+    ],
+    "subtotal": 3500.00,
+    "taxRate": 0.1,
+    "taxAmount": 350.00,
+    "total": 3850.00,
+    "status": "sent",
+    "notes": "Payment due within 30 days"
+  },
+  {
+    "Id": 2,
+    "number": "INV-2024-002",
+    "customerId": "2",
+    "customerName": "XYZ Company",
+    "customerEmail": "billing@xyzco.com",
+    "date": "2024-01-15",
+    "dueDate": "2024-02-14",
+    "lineItems": [
+      {
+        "description": "Product A",
+        "quantity": 50,
+        "rate": 25.00,
+        "amount": 1250.00
+      },
+      {
+        "description": "Product B",
+        "quantity": 25,
+        "rate": 40.00,
+        "amount": 1000.00
+      }
+    ],
+    "subtotal": 2250.00,
+    "taxRate": 0.1,
+    "taxAmount": 225.00,
+    "total": 2475.00,
+    "status": "paid",
+    "notes": ""
+  },
+  {
+    "Id": 3,
+    "number": "INV-2024-003",
+    "customerId": "3",
+    "customerName": "Global Solutions Ltd",
+    "customerEmail": "finance@globalsol.com",
+    "date": "2024-01-20",
+    "dueDate": "2024-01-20",
+    "lineItems": [
+      {
+        "description": "Monthly Subscription - Pro Plan",
+        "quantity": 1,
+        "rate": 299.00,
+        "amount": 299.00
+      }
+    ],
+    "subtotal": 299.00,
+    "taxRate": 0.1,
+    "taxAmount": 29.90,
+    "total": 328.90,
+    "status": "overdue",
+    "notes": "Recurring monthly charge"
+  },
+  {
+    "Id": 4,
+    "number": "INV-2024-004",
+    "customerId": "1",
+    "customerName": "ABC Corporation",
+    "customerEmail": "accounts@abccorp.com",
+    "date": "2024-01-22",
+    "dueDate": "2024-02-21",
+    "lineItems": [
+      {
+        "description": "Software Development",
+        "quantity": 40,
+        "rate": 150.00,
+        "amount": 6000.00
+      }
+    ],
+    "subtotal": 6000.00,
+    "taxRate": 0.1,
+    "taxAmount": 600.00,
+    "total": 6600.00,
+    "status": "draft",
+    "notes": "Custom software development project"
+  },
+  {
+    "Id": 5,
+    "number": "INV-2024-005",
+    "customerId": "4",
+    "customerName": "Tech Innovations Inc",
+    "customerEmail": "ap@techinnovations.com",
+    "date": "2024-01-25",
+    "dueDate": "2024-02-24",
+    "lineItems": [
+      {
+        "description": "Digital Marketing Services",
+        "quantity": 1,
+        "rate": 2500.00,
+        "amount": 2500.00
+      },
+      {
+        "description": "SEO Optimization",
+        "quantity": 1,
+        "rate": 800.00,
+        "amount": 800.00
+      }
+    ],
+    "subtotal": 3300.00,
+    "taxRate": 0.1,
+    "taxAmount": 330.00,
+    "total": 3630.00,
+    "status": "sent",
+    "notes": "Monthly marketing package"
+  }
+]
