@@ -12,12 +12,10 @@ import Select from "@/components/atoms/Select";
 import { formatCurrency, formatDate } from "@/utils/formatters";
 
 const Reports = () => {
-  const [dateRange, setDateRange] = useState("month");
+const [dateRange, setDateRange] = useState("month");
   const [reportType, setReportType] = useState("all");
-const [reportType, setReportType] = useState("all");
   const [agingData, setAgingData] = useState(null);
   const [showAgingModal, setShowAgingModal] = useState(false);
-const [showAgingModal, setShowAgingModal] = useState(false);
   const [selectedAgingBucket, setSelectedAgingBucket] = useState(null);
   const reportTemplates = [
     {
@@ -71,29 +69,26 @@ description: "All account balances to verify entries",
 }
   ];
 
-  // Load aging data on mount
+// Load aging data on mount
   useEffect(() => {
-useEffect(() => {
     loadAgingData();
   }, []);
 
   const loadAgingData = async () => {
-try {
+    try {
       const data = await invoiceService.getAgingWithDetails();
       setAgingData(data);
     } catch (error) {
       toast.error("Failed to load aging data");
-toast.error("Failed to load aging data");
     }
   };
 
-  const handleAgingBucketClick = (bucketName) => {
-if (agingData && agingData[bucketName]?.invoices?.length > 0) {
+const handleAgingBucketClick = (bucketName) => {
+    if (agingData && agingData[bucketName]?.invoices?.length > 0) {
       setSelectedAgingBucket({
         name: bucketName,
         data: agingData[bucketName]
       });
-});
       setShowAgingModal(true);
     }
   };
@@ -319,9 +314,9 @@ const buckets = ['current', 'overdue1_30', 'overdue31_60', 'overdue61_90', 'over
             <Input type="date" />
           </FormField>
           
-          <FormField label="To Date">
+<FormField label="To Date">
             <Input type="date" />
-</FormField>
+          </FormField>
         </div>
       </div>
 
@@ -484,8 +479,8 @@ Custom Report
               <div className="flex items-center space-x-2">
                 <Button variant="ghost" size="sm">
                   <ApperIcon name="Download" className="w-4 h-4" />
-                </Button>
-<Button variant="ghost" size="sm">
+</Button>
+                <Button variant="ghost" size="sm">
                   <ApperIcon name="Share" className="w-4 h-4" />
                 </Button>
               </div>
