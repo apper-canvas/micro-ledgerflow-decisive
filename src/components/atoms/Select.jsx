@@ -6,16 +6,9 @@ const Select = forwardRef(({
   className, 
   children,
   error,
+  placeholder,
   ...props 
 }, ref) => {
-  // Filter children to ensure only valid select children are rendered
-  const validChildren = React.Children.toArray(children).filter(child => {
-    if (typeof child === 'string' || typeof child === 'number') return false;
-    if (!React.isValidElement(child)) return false;
-    const childType = child.type;
-    return childType === 'option' || childType === 'optgroup' || 
-           (typeof childType === 'string' && (childType === 'option' || childType === 'optgroup'));
-  });
 
   return (
     <div className="relative">
@@ -25,10 +18,15 @@ const Select = forwardRef(({
           error && "border-red-300 focus:ring-red-500",
           className
         )}
-        ref={ref}
+ref={ref}
         {...props}
       >
-        {validChildren.length > 0 ? validChildren : children}
+        {placeholder && (
+          <option value="" disabled hidden>
+            {placeholder}
+          </option>
+        )}
+        {children}
       </select>
       <ApperIcon 
         icon="chevron-down" 
