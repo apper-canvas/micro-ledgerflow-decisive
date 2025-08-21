@@ -58,5 +58,29 @@ export const getStatusColor = (status) => {
     unmatched: "bg-yellow-100 text-yellow-700",
   }
   
-  return statusColors[status] || "bg-gray-100 text-gray-700"
+return statusColors[status] || "bg-gray-100 text-gray-700"
+}
+
+export const formatVariance = (variance) => {
+  if (variance === 0) return "$0"
+  const prefix = variance > 0 ? "+" : ""
+  return `${prefix}${formatCurrency(Math.abs(variance))}`
+}
+
+export const formatVariancePercent = (variancePercent) => {
+  if (variancePercent === 0) return "0%"
+  const prefix = variancePercent > 0 ? "+" : ""
+  return `${prefix}${(variancePercent * 100).toFixed(1)}%`
+}
+
+export const getVarianceStatus = (variancePercent) => {
+  if (variancePercent >= 0) return "favorable"
+  return "unfavorable"
+}
+
+export const getVarianceSeverity = (variancePercent) => {
+  const absVariance = Math.abs(variancePercent)
+  if (absVariance > 0.15) return "high"
+  if (absVariance > 0.05) return "medium"
+  return "low"
 }

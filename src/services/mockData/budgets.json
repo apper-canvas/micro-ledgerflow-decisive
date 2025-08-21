@@ -1,0 +1,192 @@
+[
+  {
+    "Id": 1,
+    "category": "Product Sales",
+    "period": "2024-Q1",
+    "budgetAmount": 180000,
+    "actualAmount": 165000,
+    "variance": -15000,
+    "variancePercent": -8.33,
+    "status": "unfavorable",
+    "subcategories": [
+      {
+        "name": "Hardware Sales",
+        "budget": 120000,
+        "actual": 105000,
+        "variance": -15000
+      },
+      {
+        "name": "Software Licenses",
+        "budget": 60000,
+        "actual": 60000,
+        "variance": 0
+      }
+    ]
+  },
+  {
+    "Id": 2,
+    "category": "Service Revenue", 
+    "period": "2024-Q1",
+    "budgetAmount": 90000,
+    "actualAmount": 95000,
+    "variance": 5000,
+    "variancePercent": 5.56,
+    "status": "favorable",
+    "subcategories": [
+      {
+        "name": "Consulting",
+        "budget": 60000,
+        "actual": 65000,
+        "variance": 5000
+      },
+      {
+        "name": "Support Services",
+        "budget": 30000,
+        "actual": 30000,
+        "variance": 0
+      }
+    ]
+  },
+  {
+    "Id": 3,
+    "category": "Operating Expenses",
+    "period": "2024-Q1", 
+    "budgetAmount": 75000,
+    "actualAmount": 68000,
+    "variance": 7000,
+    "variancePercent": 9.33,
+    "status": "favorable",
+    "subcategories": [
+      {
+        "name": "Rent",
+        "budget": 18000,
+        "actual": 18000,
+        "variance": 0
+      },
+      {
+        "name": "Utilities",
+        "budget": 9000,
+        "actual": 8500,
+        "variance": 500
+      },
+      {
+        "name": "Office Supplies",
+        "budget": 6000,
+        "actual": 4500,
+        "variance": 1500
+      },
+      {
+        "name": "Insurance",
+        "budget": 12000,
+        "actual": 12000,
+        "variance": 0
+      },
+      {
+        "name": "Professional Fees",
+        "budget": 15000,
+        "actual": 12000,
+        "variance": 3000
+      },
+      {
+        "name": "Travel & Entertainment",
+        "budget": 9000,
+        "actual": 7500,
+        "variance": 1500
+      },
+      {
+        "name": "Other",
+        "budget": 6000,
+        "actual": 5500,
+        "variance": 500
+      }
+    ]
+  },
+  {
+    "Id": 4,
+    "category": "Marketing",
+    "period": "2024-Q1",
+    "budgetAmount": 25000,
+    "actualAmount": 28000,
+    "variance": -3000,
+    "variancePercent": -12.0,
+    "status": "unfavorable",
+    "subcategories": [
+      {
+        "name": "Digital Marketing",
+        "budget": 15000,
+        "actual": 18000,
+        "variance": -3000
+      },
+      {
+        "name": "Trade Shows",
+        "budget": 10000,
+        "actual": 10000,
+        "variance": 0
+      }
+    ]
+  },
+  {
+    "Id": 5,
+    "category": "Equipment",
+    "period": "2024-Q1",
+    "budgetAmount": 20000,
+    "actualAmount": 24000,
+    "variance": -4000,
+    "variancePercent": -20.0,
+    "status": "unfavorable", 
+    "subcategories": [
+      {
+        "name": "Computer Hardware",
+        "budget": 12000,
+        "actual": 15000,
+        "variance": -3000
+      },
+      {
+        "name": "Office Furniture",
+        "budget": 8000,
+        "actual": 9000,
+        "variance": -1000
+      }
+    ]
+  },
+  {
+    "Id": 6,
+    "category": "Product Sales",
+    "period": "2024-01",
+    "budgetAmount": 60000,
+    "actualAmount": 55000,
+    "variance": -5000,
+    "variancePercent": -8.33,
+    "status": "unfavorable"
+  },
+  {
+    "Id": 7,
+    "category": "Service Revenue",
+    "period": "2024-01", 
+    "budgetAmount": 30000,
+    "actualAmount": 32000,
+    "variance": 2000,
+    "variancePercent": 6.67,
+    "status": "favorable"
+  },
+  {
+    "Id": 8,
+    "category": "Operating Expenses",
+    "period": "2024-01",
+    "budgetAmount": 25000,
+    "actualAmount": 23000,
+    "variance": 2000,
+    "variancePercent": 8.0,
+    "status": "favorable"
+  },
+  {
+    "Id": 9,
+    "category": "Marketing",
+    "period": "2024-01",
+    "budgetAmount": 8000,
+    "actualAmount": 9500,
+    "variance": -1500,
+    "variancePercent": -18.75,
+    "status": "unfavorable"
+  }
+]
