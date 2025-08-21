@@ -12,11 +12,13 @@ import Select from "@/components/atoms/Select";
 import { formatCurrency, formatDate } from "@/utils/formatters";
 
 const Reports = () => {
-  const [dateRange, setDateRange] = useState("month")
-  const [reportType, setReportType] = useState("all")
-  const [agingData, setAgingData] = useState(null)
-  const [showAgingModal, setShowAgingModal] = useState(false)
-  const [selectedAgingBucket, setSelectedAgingBucket] = useState(null)
+  const [dateRange, setDateRange] = useState("month");
+  const [reportType, setReportType] = useState("all");
+const [reportType, setReportType] = useState("all");
+  const [agingData, setAgingData] = useState(null);
+  const [showAgingModal, setShowAgingModal] = useState(false);
+const [showAgingModal, setShowAgingModal] = useState(false);
+  const [selectedAgingBucket, setSelectedAgingBucket] = useState(null);
   const reportTemplates = [
     {
       name: "Profit & Loss",
@@ -38,9 +40,9 @@ const Reports = () => {
     },
     {
       name: "Trial Balance",
-      description: "All account balances to verify entries",
+description: "All account balances to verify entries",
       icon: "Scale",
-color: "primary"
+      color: "primary"
     },
     {
       name: "AR/AP Aging Chart",
@@ -66,36 +68,37 @@ color: "primary"
       description: "Compare actual performance to budget",
       icon: "Target",
       color: "accent"
-    }
-  ]
+}
+  ];
 
-// Load aging data on mount
+  // Load aging data on mount
   useEffect(() => {
-    loadAgingData()
-  }, [])
+useEffect(() => {
+    loadAgingData();
+  }, []);
 
   const loadAgingData = async () => {
-    try {
-      const data = await invoiceService.getAgingWithDetails()
-      setAgingData(data)
+try {
+      const data = await invoiceService.getAgingWithDetails();
+      setAgingData(data);
     } catch (error) {
-      toast.error("Failed to load aging data")
+      toast.error("Failed to load aging data");
+toast.error("Failed to load aging data");
     }
-  }
+  };
 
   const handleAgingBucketClick = (bucketName) => {
-    if (agingData && agingData[bucketName]?.invoices?.length > 0) {
+if (agingData && agingData[bucketName]?.invoices?.length > 0) {
       setSelectedAgingBucket({
         name: bucketName,
         data: agingData[bucketName]
-      })
-      setShowAgingModal(true)
+      });
+});
+      setShowAgingModal(true);
     }
-  }
-
-  const AgingChart = () => {
-    if (!agingData) return null
-
+  };
+const AgingChart = () => {
+    if (!agingData) return null;
     const agingChartOptions = {
       chart: {
         type: "bar",
@@ -103,9 +106,9 @@ color: "primary"
         toolbar: { show: true },
         events: {
           dataPointSelection: (event, chartContext, config) => {
-            const buckets = ['current', 'overdue1_30', 'overdue31_60', 'overdue61_90', 'overdue90Plus']
-            const selectedBucket = buckets[config.dataPointIndex]
-            handleAgingBucketClick(selectedBucket)
+const buckets = ['current', 'overdue1_30', 'overdue31_60', 'overdue61_90', 'overdue90Plus'];
+            const selectedBucket = buckets[config.dataPointIndex];
+            handleAgingBucketClick(selectedBucket);
           }
         }
       },
@@ -139,8 +142,8 @@ color: "primary"
       grid: {
         borderColor: "#f1f5f9",
         strokeDashArray: 3
-      }
-    }
+}
+    };
 
     const agingChartSeries = [{
       name: "Outstanding Amount",
@@ -150,8 +153,8 @@ color: "primary"
         agingData.overdue31_60.amount,
         agingData.overdue61_90.amount,
         agingData.overdue90Plus.amount
-      ]
-    }]
+]
+    }];
 
     return (
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
@@ -204,9 +207,9 @@ color: "primary"
           type="bar"
           height={400}
         />
-      </div>
-    )
-  }
+</div>
+    );
+  };
 
   // Chart configurations for dashboard metrics
   const revenueChartOptions = {
@@ -229,8 +232,8 @@ color: "primary"
     },
     legend: {
       position: "top"
-    }
-  }
+}
+  };
 
   const revenueChartSeries = [
     {
@@ -240,8 +243,8 @@ color: "primary"
     {
       name: "Expenses",
       data: [32000, 38000, 35000, 42000, 48000, 52000]
-    }
-  ]
+}
+  ];
 
   const expenseBreakdownOptions = {
     chart: {
@@ -259,11 +262,10 @@ color: "primary"
           size: "60%"
         }
       }
-    }
-  }
+}
+  };
 
-  const expenseBreakdownSeries = [35, 25, 20, 15, 5]
-
+  const expenseBreakdownSeries = [35, 25, 20, 15, 5];
   return (
     <div className="p-4 lg:p-8 space-y-6">
       <Header
@@ -319,9 +321,9 @@ color: "primary"
           
           <FormField label="To Date">
             <Input type="date" />
-          </FormField>
+</FormField>
         </div>
-</div>
+      </div>
 
       {/* AR/AP Aging Chart */}
       <AgingChart />
@@ -416,9 +418,9 @@ color: "primary"
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-slate-900">Financial Reports</h3>
           <Button variant="outline" icon="Plus">
-            Custom Report
+Custom Report
           </Button>
-</div>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {reportTemplates.map((report) => (
@@ -483,12 +485,12 @@ color: "primary"
                 <Button variant="ghost" size="sm">
                   <ApperIcon name="Download" className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm">
+<Button variant="ghost" size="sm">
                   <ApperIcon name="Share" className="w-4 h-4" />
                 </Button>
               </div>
             </div>
-))}
+          ))}
         </div>
       </div>
       {/* Aging Details Modal */}
@@ -574,7 +576,8 @@ color: "primary"
           </div>
         </div>
       )}
-    </div>
-  )
+</div>
+  );
+};
 
-export default Reports
+export default Reports;
