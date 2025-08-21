@@ -1,17 +1,22 @@
-import React, { useState } from "react"
-import Header from "@/components/organisms/Header"
-import Button from "@/components/atoms/Button"
-import Badge from "@/components/atoms/Badge"
-import FormField from "@/components/molecules/FormField"
-import Select from "@/components/atoms/Select"
-import Input from "@/components/atoms/Input"
-import ApperIcon from "@/components/ApperIcon"
-import Chart from "react-apexcharts"
+import React, { useEffect, useState } from "react";
+import Chart from "react-apexcharts";
+import { toast } from "react-toastify";
+import invoiceService from "@/services/api/invoiceService";
+import ApperIcon from "@/components/ApperIcon";
+import Header from "@/components/organisms/Header";
+import FormField from "@/components/molecules/FormField";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import Input from "@/components/atoms/Input";
+import Select from "@/components/atoms/Select";
+import { formatCurrency, formatDate } from "@/utils/formatters";
 
 const Reports = () => {
   const [dateRange, setDateRange] = useState("month")
   const [reportType, setReportType] = useState("all")
-
+  const [agingData, setAgingData] = useState(null)
+  const [showAgingModal, setShowAgingModal] = useState(false)
+  const [selectedAgingBucket, setSelectedAgingBucket] = useState(null)
   const reportTemplates = [
     {
       name: "Profit & Loss",
@@ -35,13 +40,14 @@ const Reports = () => {
       name: "Trial Balance",
       description: "All account balances to verify entries",
       icon: "Scale",
-      color: "primary"
+color: "primary"
     },
     {
-      name: "Accounts Receivable Aging",
-      description: "Outstanding customer invoices by age",
+      name: "AR/AP Aging Chart",
+      description: "Interactive aging with drill-down details",
       icon: "Clock",
-      color: "warning"
+      color: "warning",
+      isInteractive: true
     },
     {
       name: "Accounts Payable Aging",
@@ -62,6 +68,145 @@ const Reports = () => {
       color: "accent"
     }
   ]
+
+// Load aging data on mount
+  useEffect(() => {
+    loadAgingData()
+  }, [])
+
+  const loadAgingData = async () => {
+    try {
+      const data = await invoiceService.getAgingWithDetails()
+      setAgingData(data)
+    } catch (error) {
+      toast.error("Failed to load aging data")
+    }
+  }
+
+  const handleAgingBucketClick = (bucketName) => {
+    if (agingData && agingData[bucketName]?.invoices?.length > 0) {
+      setSelectedAgingBucket({
+        name: bucketName,
+        data: agingData[bucketName]
+      })
+      setShowAgingModal(true)
+    }
+  }
+
+  const AgingChart = () => {
+    if (!agingData) return null
+
+    const agingChartOptions = {
+      chart: {
+        type: "bar",
+        height: 400,
+        toolbar: { show: true },
+        events: {
+          dataPointSelection: (event, chartContext, config) => {
+            const buckets = ['current', 'overdue1_30', 'overdue31_60', 'overdue61_90', 'overdue90Plus']
+            const selectedBucket = buckets[config.dataPointIndex]
+            handleAgingBucketClick(selectedBucket)
+          }
+        }
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: '60%',
+          borderRadius: 4
+        }
+      },
+      colors: ["#10b981", "#f59e0b", "#ef4444", "#dc2626", "#7f1d1d"],
+      xaxis: {
+        categories: ["Current", "1-30 Days", "31-60 Days", "61-90 Days", "90+ Days"],
+        title: {
+          text: "Aging Periods"
+        }
+      },
+      yaxis: {
+        title: {
+          text: "Amount"
+        },
+        labels: {
+          formatter: (value) => formatCurrency(value)
+        }
+      },
+      tooltip: {
+        y: {
+          formatter: (value) => formatCurrency(value)
+        }
+      },
+      grid: {
+        borderColor: "#f1f5f9",
+        strokeDashArray: 3
+      }
+    }
+
+    const agingChartSeries = [{
+      name: "Outstanding Amount",
+      data: [
+        agingData.current.amount,
+        agingData.overdue1_30.amount,
+        agingData.overdue31_60.amount,
+        agingData.overdue61_90.amount,
+        agingData.overdue90Plus.amount
+      ]
+    }]
+
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900">AR/AP Aging Analysis</h3>
+            <p className="text-sm text-slate-600">Click on bars to drill down into individual invoices</p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Badge variant="success" className="flex items-center">
+              <ApperIcon name="CheckCircle" className="w-3 h-3 mr-1" />
+              Interactive
+            </Badge>
+            <Button variant="ghost" size="sm" icon="Refresh" onClick={loadAgingData}>
+              Refresh
+            </Button>
+          </div>
+        </div>
+
+        {/* Summary Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+          {[
+            { key: 'current', label: 'Current', color: 'bg-green-100 text-green-800' },
+            { key: 'overdue1_30', label: '1-30 Days', color: 'bg-yellow-100 text-yellow-800' },
+            { key: 'overdue31_60', label: '31-60 Days', color: 'bg-orange-100 text-orange-800' },
+            { key: 'overdue61_90', label: '61-90 Days', color: 'bg-red-100 text-red-800' },
+            { key: 'overdue90Plus', label: '90+ Days', color: 'bg-red-200 text-red-900' }
+          ].map(bucket => (
+            <div 
+              key={bucket.key}
+              className="p-3 rounded-lg border border-slate-200 cursor-pointer hover:shadow-md transition-all"
+              onClick={() => handleAgingBucketClick(bucket.key)}
+            >
+              <div className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${bucket.color} mb-2`}>
+                {bucket.label}
+              </div>
+              <p className="text-lg font-semibold text-slate-900">
+                {formatCurrency(agingData[bucket.key].amount)}
+              </p>
+              <p className="text-xs text-slate-600">
+                {agingData[bucket.key].invoices.length} invoice{agingData[bucket.key].invoices.length !== 1 ? 's' : ''}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <Chart
+          options={agingChartOptions}
+          series={agingChartSeries}
+          type="bar"
+          height={400}
+        />
+      </div>
+    )
+  }
 
   // Chart configurations for dashboard metrics
   const revenueChartOptions = {
@@ -176,8 +321,10 @@ const Reports = () => {
             <Input type="date" />
           </FormField>
         </div>
-      </div>
+</div>
 
+      {/* AR/AP Aging Chart */}
+      <AgingChart />
       {/* Key Metrics Dashboard */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Revenue vs Expenses Chart */}
@@ -271,7 +418,7 @@ const Reports = () => {
           <Button variant="outline" icon="Plus">
             Custom Report
           </Button>
-        </div>
+</div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {reportTemplates.map((report) => (
@@ -282,6 +429,9 @@ const Reports = () => {
                 </div>
                 <div className="flex-1">
                   <h4 className="font-medium text-slate-900 text-sm">{report.name}</h4>
+                  {report.isInteractive && (
+                    <Badge variant="accent" className="text-xs mt-1">Interactive</Badge>
+                  )}
                 </div>
               </div>
               
@@ -338,11 +488,93 @@ const Reports = () => {
                 </Button>
               </div>
             </div>
-          ))}
+))}
         </div>
       </div>
+      {/* Aging Details Modal */}
+      {showAgingModal && selectedAgingBucket && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div className="flex items-center justify-between p-6 border-b border-slate-200">
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900">
+                  {selectedAgingBucket.name.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} Invoices
+                </h3>
+                <p className="text-sm text-slate-600">
+                  {selectedAgingBucket.data.invoices.length} invoice{selectedAgingBucket.data.invoices.length !== 1 ? 's' : ''} • 
+                  Total: {formatCurrency(selectedAgingBucket.data.amount)}
+                </p>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowAgingModal(false)}
+              >
+                <ApperIcon name="X" className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            <div className="overflow-auto max-h-[60vh] p-6">
+              <div className="space-y-3">
+                {selectedAgingBucket.data.invoices.map((invoice) => (
+                  <div key={invoice.Id} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:bg-slate-50">
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-3 h-3 rounded-full ${
+                        !invoice.isOverdue ? 'bg-green-500' : 
+                        invoice.daysOverdue <= 30 ? 'bg-yellow-500' :
+                        invoice.daysOverdue <= 60 ? 'bg-orange-500' : 'bg-red-500'
+                      }`}></div>
+                      <div>
+                        <p className="font-medium text-slate-900">{invoice.number}</p>
+                        <p className="text-sm text-slate-600">{invoice.customerName}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="text-center">
+                      <p className="font-medium text-slate-900">{formatCurrency(invoice.total)}</p>
+                      <p className="text-xs text-slate-600">
+                        Due: {formatDate(invoice.dueDate)}
+                      </p>
+                    </div>
+                    
+                    <div className="text-center">
+                      <p className={`text-sm font-medium ${
+                        !invoice.isOverdue ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {invoice.isOverdue ? `${invoice.daysOverdue} days overdue` : 'Current'}
+                      </p>
+                      <Badge variant={invoice.status === 'sent' ? 'warning' : 'default'} className="text-xs">
+                        {invoice.status}
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Button variant="outline" size="sm">
+                        <ApperIcon name="Eye" className="w-3 h-3 mr-1" />
+                        View
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <ApperIcon name="Send" className="w-3 h-3 mr-1" />
+                        Send
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-end space-x-3 p-6 border-t border-slate-200 bg-slate-50">
+              <Button variant="outline" onClick={() => setShowAgingModal(false)}>
+                Close
+              </Button>
+              <Button icon="Download">
+                Export List
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
-}
 
 export default Reports

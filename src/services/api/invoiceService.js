@@ -93,7 +93,7 @@ class InvoiceService {
     return await this.update(id, { status: "paid" })
   }
 
-  async getAgingSummary() {
+async getAgingSummary() {
     await this.delay(300)
     const today = new Date()
     
@@ -121,6 +121,51 @@ class InvoiceService {
           aging.overdue61_90 += invoice.total
         } else {
           aging.overdue90Plus += invoice.total
+        }
+      })
+    
+    return aging
+  }
+
+  async getAgingWithDetails() {
+    await this.delay(350)
+    const today = new Date()
+    
+    const aging = {
+      current: { amount: 0, invoices: [] },
+      overdue1_30: { amount: 0, invoices: [] },
+      overdue31_60: { amount: 0, invoices: [] },
+      overdue61_90: { amount: 0, invoices: [] },
+      overdue90Plus: { amount: 0, invoices: [] }
+    }
+    
+    this.invoices
+      .filter(inv => inv.status !== "paid")
+      .forEach(invoice => {
+        const dueDate = new Date(invoice.dueDate)
+        const daysOverdue = Math.floor((today - dueDate) / (1000 * 60 * 60 * 24))
+        
+        const invoiceWithAging = {
+          ...invoice,
+          daysOverdue: Math.max(0, daysOverdue),
+          isOverdue: daysOverdue > 0
+        }
+        
+        if (daysOverdue <= 0) {
+          aging.current.amount += invoice.total
+          aging.current.invoices.push(invoiceWithAging)
+        } else if (daysOverdue <= 30) {
+          aging.overdue1_30.amount += invoice.total
+          aging.overdue1_30.invoices.push(invoiceWithAging)
+        } else if (daysOverdue <= 60) {
+          aging.overdue31_60.amount += invoice.total
+          aging.overdue31_60.invoices.push(invoiceWithAging)
+        } else if (daysOverdue <= 90) {
+          aging.overdue61_90.amount += invoice.total
+          aging.overdue61_90.invoices.push(invoiceWithAging)
+        } else {
+          aging.overdue90Plus.amount += invoice.total
+          aging.overdue90Plus.invoices.push(invoiceWithAging)
         }
       })
     
