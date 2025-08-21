@@ -1,5 +1,5 @@
 import React from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import Empty from "@/components/ui/Empty";
 import Loading from "@/components/ui/Loading";
 import StatusBadge from "@/components/molecules/StatusBadge";
